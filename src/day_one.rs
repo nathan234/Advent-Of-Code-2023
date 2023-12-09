@@ -67,3 +67,95 @@ pub fn read_lines_from_file<P>(filename: P) -> io::Result<i32>
 
     Ok(sum)
 }
+
+
+//--- Part Two ---
+// Your calculation isn't quite right. It looks like some of the digits are actually spelled out with letters: one, two, three, four, five, six, seven, eight, and nine also count as valid "digits".
+//
+// Equipped with this new information, you now need to find the real first and last digit on each line. For example:
+//
+// two1nine
+// eightwothree
+// abcone2threexyz
+// xtwone3four
+// 4nineeightseven2
+// zoneight234
+// 7pqrstsixteen
+// In this example, the calibration values are 29, 83, 13, 24, 42, 14, and 76. Adding these together produces 281.
+//
+// What is the sum of all of the calibration values?
+
+pub fn read_lines_from_file_part_two<P>(filename: P) -> io::Result<i32>
+    where
+        P: AsRef<Path>,
+{
+    let file = File::open(filename)?;
+    let reader = io::BufReader::new(file);
+
+    let nums = [
+        "one", "1", "two", "2", "three", "3", "four", "4", "five", "5", "six", "6", "seven",
+        "7", "eight", "8", "nine", "9"
+    ];
+    let mut total = 0;
+    for line in reader.lines() {
+        let mut first = None;
+        match line {
+            Ok(line) => {
+                'out: for i in 0..line.len() {
+                    for (index, num) in nums.iter().enumerate() {
+                        if i + num.len() > line.len() {
+                            continue;
+                        }
+                        if line[i..i + num.len()] == **num {
+                            first = Some(1 + index / 2);
+                            break 'out;
+                        }
+                    }
+                }
+                let Some(first) = first else { panic!("invalid input") };
+
+                let mut last = None;
+                'out: for i in (0..line.len()).rev() {
+                    for (index, num) in nums.iter().enumerate() {
+                        if i + num.len() > line.len() {
+                            continue;
+                        }
+                        if line[i..i + num.len()] == **num {
+                            last = Some(1 + index / 2);
+                            break 'out;
+                        }
+                    }
+                }
+                let Some(last) = last else { panic!("invalid input") };
+                total += 10 * first as i32 + last as i32;
+            }
+            Err(_) => {}
+        }
+
+    }
+    Ok(total)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::day_one::{read_lines_from_file_part_two};
+    #[test]
+    fn test_sum() {
+        let actual_output = match read_lines_from_file_part_two("src/day_one_test_input.txt") {
+            Ok(sum) => { sum}
+            Err(_) => { 0 }
+        };
+
+        assert_eq!(actual_output, 281, "Failed");
+    }
+
+    #[test]
+    fn test_sum_actual() {
+        let actual_output = match read_lines_from_file_part_two("src/day_one_input.txt") {
+            Ok(sum) => { sum}
+            Err(_) => { 0 }
+        };
+
+        assert_eq!(actual_output, 53389, "Failed");
+    }
+}
