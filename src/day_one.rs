@@ -46,8 +46,8 @@ fn extract_calibration_value(line: &str) -> Option<i32> {
  * Read the text file and loop over each line, summing the result
  **/
 pub fn read_lines_from_file<P>(filename: P) -> io::Result<i32>
-    where
-        P: AsRef<Path>,
+where
+    P: AsRef<Path>,
 {
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
@@ -68,7 +68,6 @@ pub fn read_lines_from_file<P>(filename: P) -> io::Result<i32>
     Ok(sum)
 }
 
-
 //--- Part Two ---
 // Your calculation isn't quite right. It looks like some of the digits are actually spelled out with letters: one, two, three, four, five, six, seven, eight, and nine also count as valid "digits".
 //
@@ -86,15 +85,15 @@ pub fn read_lines_from_file<P>(filename: P) -> io::Result<i32>
 // What is the sum of all of the calibration values?
 
 pub fn read_lines_from_file_part_two<P>(filename: P) -> io::Result<i32>
-    where
-        P: AsRef<Path>,
+where
+    P: AsRef<Path>,
 {
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
 
     let nums = [
-        "one", "1", "two", "2", "three", "3", "four", "4", "five", "5", "six", "6", "seven",
-        "7", "eight", "8", "nine", "9"
+        "one", "1", "two", "2", "three", "3", "four", "4", "five", "5", "six", "6", "seven", "7",
+        "eight", "8", "nine", "9",
     ];
     let mut total = 0;
     for line in reader.lines() {
@@ -131,19 +130,18 @@ pub fn read_lines_from_file_part_two<P>(filename: P) -> io::Result<i32>
             }
             Err(_) => {}
         }
-
     }
     Ok(total)
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::day_one::{read_lines_from_file_part_two};
+    use crate::day_one::read_lines_from_file_part_two;
     #[test]
     fn test_sum() {
         let actual_output = match read_lines_from_file_part_two("src/day_one_test_input.txt") {
-            Ok(sum) => { sum}
-            Err(_) => { 0 }
+            Ok(sum) => sum,
+            Err(_) => 0,
         };
 
         assert_eq!(actual_output, 281, "Failed");
@@ -152,8 +150,8 @@ mod tests {
     #[test]
     fn test_sum_actual() {
         let actual_output = match read_lines_from_file_part_two("src/day_one_input.txt") {
-            Ok(sum) => { sum}
-            Err(_) => { 0 }
+            Ok(sum) => sum,
+            Err(_) => 0,
         };
 
         assert_eq!(actual_output, 53389, "Failed");
